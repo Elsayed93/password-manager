@@ -4,9 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @param int $user_id
+ * @param string $platform_name
+ * @param string $username
+ * @param string $encrypted_password
+ */
 class Password extends Model
 {
-    protected $fillable = ['platform_name', 'username', 'encrypted_password'];
+    protected $fillable = ['user_id', 'platform_name', 'username', 'encrypted_password'];
 
     public function user()
     {
