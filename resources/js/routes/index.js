@@ -19,6 +19,7 @@ const routes = [
     {
         path: '/passwords',
         component: Passwords,
+        beforeEnter: [checkIfAuthenticated],
     },
 ];
 
@@ -27,10 +28,9 @@ const router = createRouter({
     routes,
 });
 
-router.beforeEach((to, from) => {
-    const authStore = useAuthStore();
 
-    // explicitly return false to cancel the navigation
+function checkIfAuthenticated(to) {
+    const authStore = useAuthStore();
     if (
         // make sure the user is authenticated
         !authStore.user &&
@@ -40,7 +40,9 @@ router.beforeEach((to, from) => {
         // redirect the user to the login page
         return { name: 'Login' }
     }
-    return true
-})
+
+    return true;
+}
+
 
 export default router;
