@@ -16,6 +16,6 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/passwords', [PasswordController::class, 'index']);
     Route::post('/passwords', [PasswordController::class, 'store']);
-    Route::put('/passwords/{id}', [PasswordController::class, 'update']);
-    Route::delete('/passwords/{id}', [PasswordController::class, 'destroy']);
+    Route::put('/passwords/{password}', [PasswordController::class, 'update']);
+    Route::delete('/passwords/{password}', [PasswordController::class, 'destroy']);
 });

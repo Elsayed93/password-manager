@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Password;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PasswordController extends Controller
 {
@@ -66,7 +67,7 @@ class PasswordController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Password $password)
-    {
+    {        
         $password->delete();
 
         return response()->json(['message' => 'Password deleted']);

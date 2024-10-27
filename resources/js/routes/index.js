@@ -15,11 +15,11 @@ const routes = [
         name: 'Login',
         component: Login
     },
-    { path: '/register', component: Register },
+    { path: '/register', name: 'Register', component: Register },
     {
         path: '/passwords',
         component: Passwords,
-        beforeEnter: [checkIfAuthenticated],
+        // beforeEnter: [checkIfAuthenticated],
     },
 ];
 
@@ -29,20 +29,28 @@ const router = createRouter({
 });
 
 
-function checkIfAuthenticated(to) {
+router.beforeEach((to, from) => {
+
+    if (to.name == 'Login' || to.name == 'Register') {
+        return true;
+    }
+
     const authStore = useAuthStore();
+    // console.log(authStore.user);
+    // debugger;
+
     if (
         // make sure the user is authenticated
         !authStore.user &&
         // ❗️ Avoid an infinite redirect
-        to.name !== 'Login'
-    ) {
+        to.name !== 'Login') {
         // redirect the user to the login page
         return { name: 'Login' }
     }
 
-    return true;
-}
+    // explicitly return false to cancel the navigation
+    return true
+})
 
 
 export default router;
