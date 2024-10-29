@@ -17,9 +17,14 @@
                 <input v-model="newPassword.username" type="text" placeholder="Username"
                     class="border p-2 mb-2 block w-full">
 
-                <input v-model="newPassword.encrypted_password" type="password" placeholder="Password"
-                    class="border p-2 mb-4 block w-full">
+                <input v-model="newPassword.encrypted_password" :type="isGenerated ? 'text' : 'password'"
+                    @keydown="isGenerated = false" placeholder="Password" class="border p-2 mb-1 block w-full">
 
+                <button type="button" class="mb-3" style="color: #003f9e;" @click="generateRandomPassword()">
+                    generate random password
+                </button>
+
+                <br>
                 <button type="submit" class="bg-green-500 text-white px-4 py-2">Save</button>
             </form>
         </div>
@@ -45,7 +50,8 @@
                 </thead>
 
                 <tbody>
-                    <tr v-for="password in passwords" :key="password.id"
+                    <tr v-for="password,index in passwords" :key="password.id"
+                  
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             {{ password.platform_name }}
@@ -53,28 +59,44 @@
                         <td class="px-6 py-4">
                             {{ password.username }}
                         </td>
-                        
+
                         <td class="px-6 py-4">
                             <!-- Display password based on visibility status -->
                             {{ password.isPasswordHidden ? password.encrypted_password.replace(/./g, '*') :
-                            password.encrypted_password }}
+                                password.encrypted_password }}
 
                             <!-- Toggle button for password visibility -->
                             <span class="material-symbols-outlined cursor-pointer"
                                 @click="togglePasswordVisibility(password)">
                                 {{ password.isPasswordHidden ? 'visibility' : 'visibility_off' }}
                             </span>
+
+                            <!-- Copy password to clipboard -->
+                            <span class="material-symbols-outlined cursor-pointer" :data-tooltip-target="'copy-tooltip'+'-'+index"
+                                @click="copyPasswordtoClipboard(password.encrypted_password)">
+                                content_copy
+                            </span>
+
+                            <div :id="'copy-tooltip'+'-'+index" role="tooltip"
+                                class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                                Copy password
+                                <div class="tooltip-arrow" data-popper-arrow></div>
+                            </div>
                         </td>
 
                         <td>
                             <button @click="deletePassword(password.id)" class="text-red-500">Delete</button>
                         </td>
                     </tr>
-
                 </tbody>
+
             </table>
+
         </div>
     </div>
+
+
+
 </template>
 
 <script setup>
@@ -94,6 +116,7 @@ const newPassword = ref({
 });
 
 const router = useRouter()
+const isGenerated = ref(false)
 
 onMounted(async () => {
     await loadPasswords();
@@ -138,6 +161,27 @@ async function deletePassword(id) {
 
 const togglePasswordVisibility = (password) => {
     password.isPasswordHidden = !password.isPasswordHidden;
+}
+
+const generateRandomPassword = (length = 12) => {
+    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+~`|}{[]:;?><,./-=";
+    let password = "";
+
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * charset.length);
+        password += charset[randomIndex];
+    }
+    console.log(isGenerated.value);
+
+    isGenerated.value = true
+    console.log(isGenerated.value);
+
+    newPassword.value.encrypted_password = password
+}
+
+// copy password
+const copyPasswordtoClipboard = (password) => {
+    navigator.clipboard.writeText(password);
 }
 
 const logout = async () => {

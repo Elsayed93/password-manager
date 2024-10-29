@@ -3,6 +3,7 @@ import { createPinia } from 'pinia';
 import App from './App.vue';
 // import './index.css';
 import router from './routes';
+import 'flowbite';
 
 const pinia = createPinia()
 const app = createApp(App)

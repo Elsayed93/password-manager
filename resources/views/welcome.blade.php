@@ -18,6 +18,10 @@
 
 <body class="font-sans antialiased dark:bg-black dark:text-white/50">
     <div id="app"></div> <!-- This is where Vue will mount -->
+
+
+
+    <script src="./node_modules/flowbite/dist/flowbite.min.js"></script>
 </body>
 
 </html>
