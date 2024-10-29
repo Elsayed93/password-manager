@@ -45,22 +45,32 @@
                 </thead>
 
                 <tbody>
-                    <tr v-for="password in passwords" :key="password.id" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <tr v-for="password in passwords" :key="password.id"
+                        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             {{ password.platform_name }}
                         </th>
                         <td class="px-6 py-4">
                             {{ password.username }}
                         </td>
+                        
                         <td class="px-6 py-4">
-                            {{ password.encrypted_password }}
+                            <!-- Display password based on visibility status -->
+                            {{ password.isPasswordHidden ? password.encrypted_password.replace(/./g, '*') :
+                            password.encrypted_password }}
+
+                            <!-- Toggle button for password visibility -->
+                            <span class="material-symbols-outlined cursor-pointer"
+                                @click="togglePasswordVisibility(password)">
+                                {{ password.isPasswordHidden ? 'visibility' : 'visibility_off' }}
+                            </span>
                         </td>
 
                         <td>
                             <button @click="deletePassword(password.id)" class="text-red-500">Delete</button>
                         </td>
                     </tr>
-                  
+
                 </tbody>
             </table>
         </div>
@@ -68,11 +78,11 @@
 </template>
 
 <script setup>
+
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
 import { useRouter } from 'vue-router';
-
 
 const authStore = useAuthStore();
 const passwords = ref([]);
@@ -90,13 +100,17 @@ onMounted(async () => {
 });
 
 async function loadPasswords() {
-    console.log(authStore.user);
     const response = await axios.get('/api/passwords', {
         headers: {
             Authorization: `Bearer ${authStore.user.token}`,
         },
     });
-    passwords.value = response.data;
+
+    // Add `isPasswordHidden` for each password entry
+    passwords.value = response.data.map(password => ({
+        ...password,
+        isPasswordHidden: true
+    }));
 }
 
 async function addPassword() {
@@ -122,10 +136,16 @@ async function deletePassword(id) {
     await loadPasswords();
 }
 
+const togglePasswordVisibility = (password) => {
+    password.isPasswordHidden = !password.isPasswordHidden;
+}
+
 const logout = async () => {
     await authStore.logout();
     router.push('/login')
 }
+
+
 </script>
 
 <style></style>
