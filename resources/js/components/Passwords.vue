@@ -192,13 +192,18 @@ async function addPassword() {
 
 }
 
-async function deletePassword(id) {
-    await axios.delete(`/api/passwords/${id}`, {
-        headers: {
-            Authorization: `Bearer ${authStore.user.token}`,
-        },
-    });
-    await loadPasswords();
+const deletePassword = async (id) => {
+    const confirmDelete = confirm('Are you sure, you want to delete the password ?!')
+
+    if (confirmDelete) {
+        await axios.delete(`/api/passwords/${id}`, {
+            headers: {
+                Authorization: `Bearer ${authStore.user.token}`,
+            },
+        });
+        await loadPasswords();
+    }
+
 }
 
 const togglePasswordVisibility = (password) => {
