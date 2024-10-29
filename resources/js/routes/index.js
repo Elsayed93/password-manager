@@ -19,7 +19,6 @@ const routes = [
     {
         path: '/passwords',
         component: Passwords,
-        // beforeEnter: [checkIfAuthenticated],
     },
 ];
 
@@ -36,8 +35,6 @@ router.beforeEach((to, from) => {
     }
 
     const authStore = useAuthStore();
-    // console.log(authStore.user);
-    // debugger;
 
     if (
         // make sure the user is authenticated
