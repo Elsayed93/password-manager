@@ -2,11 +2,7 @@
     <div class="p-8">
         <h1 class="text-2xl font-bold mb-4">Register</h1>
 
-        <div style="color: red;" v-if="error">
-            <ul v-for="err in error">
-                <li>{{err[0]}}</li>
-            </ul>
-        </div>
+        <Errors :error="error" />
 
         <form @submit.prevent="register">
             <input v-model="name" type="text" placeholder="Name" class="border p-2 mb-4 block w-full">
@@ -21,6 +17,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../store/authStore';
+import Errors from './Errors.vue';
 
 const name = ref('');
 const email = ref('');
@@ -37,7 +34,7 @@ async function register() {
     } catch (err) {
         error.value = err.response.data.errors
     }
-    
+
 }
 </script>
 
