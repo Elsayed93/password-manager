@@ -12,7 +12,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Password extends Model
 {
-    protected $fillable = ['user_id', 'platform_name', 'username', 'encrypted_password'];
+    protected $fillable = [
+        'user_id',
+        'platform_name',
+        'username',
+        'encrypted_password',
+        'notes'
+    ];
 
     public function user()
     {

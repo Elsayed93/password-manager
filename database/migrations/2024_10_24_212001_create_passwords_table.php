@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('platform_name');
             $table->string('username');
             $table->string('encrypted_password');
+            $table->longText('notes')->nullable();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

@@ -12,6 +12,7 @@
         <div v-if="showAddForm" class="mb-6">
             <Errors :error="error" />
 
+            <!-- Add Form -->
             <form @submit.prevent="addPassword">
                 <input v-model="newPassword.platform_name" type="text" placeholder="Platform Name"
                     class="border p-2 mb-2 block w-full">
@@ -19,6 +20,7 @@
                 <input v-model="newPassword.username" type="text" placeholder="Username"
                     class="border p-2 mb-2 block w-full">
 
+                <!-- password input -->
                 <div class="flex items-center">
                     <input v-model="newPassword.encrypted_password" :type="isFormPasswordHidden ? 'password' : 'text'"
                         placeholder="Password" class="border p-2 mb-1 block w-full">
@@ -48,6 +50,11 @@
                     generate random password
                 </button>
 
+
+                <textarea v-model="newPassword.notes" rows="10" placeholder="Notes"
+                    class="border p-2 mb-2 block w-full">
+                </textarea>
+
                 <button type="submit" class="bg-green-500 text-white px-4 py-2">Save</button>
             </form>
         </div>
@@ -65,6 +72,9 @@
                         </th>
                         <th scope="col" class="px-6 py-3">
                             Password
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Notes
                         </th>
                         <th scope="col" class="px-6 py-3">
                             Delete
@@ -114,6 +124,9 @@
                             </div>
                         </td>
 
+                        <td class="px-6 py-4">
+                            {{ password.notes }}
+                        </td>
                         <td>
                             <button @click="deletePassword(password.id)" class="text-red-500">Delete</button>
                         </td>
@@ -142,6 +155,7 @@ const newPassword = ref({
     platform_name: '',
     username: '',
     encrypted_password: '',
+    notes: '',
 });
 
 const router = useRouter()
@@ -158,15 +172,21 @@ async function loadPasswords() {
             Authorization: `Bearer ${authStore.user.token}`,
         },
     });
+    console.log(response.data);
 
     // Add `isPasswordHidden` for each password entry
     passwords.value = response.data.map(password => ({
+        
         ...password,
         isPasswordHidden: true
     }));
 }
 
 async function addPassword() {
+    console.log(authStore.user);
+    console.log(authStore.user.token);
+    // debugger;
+    
     try {
         await axios.post('/api/passwords',
             newPassword.value,
@@ -178,7 +198,7 @@ async function addPassword() {
         );
         await loadPasswords();
 
-        newPassword.value = { platform_name: '', username: '', encrypted_password: '' };
+        newPassword.value = { platform_name: '', username: '', encrypted_password: '', notes: '' };
         showAddForm.value = false;
         error.value = null;
 

@@ -32,6 +32,7 @@ class PasswordController extends Controller
             'platform_name' => 'required|string|max:255',
             'username' => 'required|string|max:255',
             'encrypted_password' => 'required|string|max:30',
+            'notes' => 'nullable|string',
         ]);
 
         $password = $request->user()->passwords()->create($validated);
