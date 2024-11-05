@@ -188,8 +188,6 @@ async function addPassword() {
         error.value = err.response.data.errors
     }
 
-
-
 }
 
 const deletePassword = async (id) => {
